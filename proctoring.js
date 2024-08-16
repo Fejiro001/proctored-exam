@@ -131,25 +131,18 @@
     e.preventDefault();
   }
 
-  function preventReloading(e) {
-    // Prevent Ctrl+R (refresh)
-    if (e.ctrlKey && e.key === "r") {
-      e.preventDefault();
-    }
+  function preventReloading(event) {
+    // Prevent Ctrl+R (refresh), F5 (refresh), Ctrl+F5 (hard refresh) and Ctrl+Shift+R (hard refresh)
+    switch (event) {
+      case event.ctrlKey && event.key === "r":
+      case event.key === "F5":
+      case event.ctrlKey && event.key === "F5":
+      case event.ctrlKey && event.shiftKey && event.key === "r":
+        event.preventDefault();
+        break;
 
-    // Prevent F5 (refresh)
-    if (e.key === "F5") {
-      e.preventDefault();
-    }
-
-    // Prevent Ctrl+F5 (hard refresh)
-    if (e.ctrlKey && e.key === "F5") {
-      e.preventDefault();
-    }
-
-    // Prevent Ctrl+Shift+R (hard refresh)
-    if (e.ctrlKey && e.shiftKey && e.key === "r") {
-      e.preventDefault();
+      default:
+        break;
     }
   }
 
