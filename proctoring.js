@@ -18,7 +18,7 @@
         startRecording(mediaStream);
 
         // Make window full-screen
-        enterFullScreen();
+        // enterFullScreen();
       })
       .catch((err) => {
         console.error("Error accessing webcam/mic: ", err);
@@ -111,15 +111,19 @@
     examStarted = false;
   }
 
+  function handleExamExit() {
+    let exitExam = confirm(
+      "Are you sure you want to leave? Your exam will be terminated."
+    );
+    if (exitExam) {
+      terminateExam();
+    } else {
+    }
+  }
+
   function monitorFullScreenExit() {
     if (!document.fullscreenElement && examStarted) {
-      // if (warningIssued) {
-      terminateExam();
-      // } else {
-      //   issueWarning();
-      //   warningIssued = true;
-      //   enterFullScreen();
-      // }
+      handleExamExit();
     }
   }
 
@@ -152,7 +156,7 @@
     .addEventListener("click", function () {
       startWebcamAndMic();
       verifyIdentity();
-      //   enterFullScreen();
+      enterFullScreen();
 
       document.getElementById("instructions").style.display = "none";
       document.getElementById("exam-content").style.display = "block";
@@ -163,7 +167,7 @@
   // Monitor tab switch
   document.addEventListener("visibilitychange", function () {
     if (document.hidden && examStarted) {
-      terminateExam();
+      handleExamExit();
     }
   });
 
@@ -189,7 +193,7 @@
   // End exam if exam window has lost focus
   window.onblur = function () {
     if (document.fullscreenElement && examStarted) {
-      terminateExam();
+      handleExamExit();
       exitFullScreen();
     }
   };
