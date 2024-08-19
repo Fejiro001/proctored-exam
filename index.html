@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proctored Exam</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #instructions { display: block; }
-        #exam-content, #exam-terminated, #exam-notification { display: none; }
-    </style>
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
     <section id="instructions">
-        <h1>Proctored Exam Instructions</h1>
-        <p>Please follow the instructions below:</p>
-        <ul>
-            <li>Ensure your webcam and microphone are enabled.</li>
-            <li>Be ready to verify your identity with a photo ID.</li>
-            <li>The exam will be conducted in full-screen mode.</li>
-            <li>Do not switch tabs or applications during the exam.</li>
-            <li>Do not exit full-screen mode or reload browser during the exam.</li>
-            <li>Any attempt to leave the exam window will result in termination.</li>
-        </ul>
-        <button id="startExamBtn">Start Exam</button>
+      <h1>Proctored Exam Instructions</h1>
+      <p>Please follow the instructions below:</p>
+      <ul>
+        <li>Ensure your webcam and microphone are enabled.</li>
+        <li>Be ready to verify your identity with a photo ID.</li>
+        <li>The exam will be conducted in full-screen mode.</li>
+        <li>Do not switch tabs or applications during the exam.</li>
+        <li>Do not exit full-screen mode or reload browser during the exam.</li>
+        <li>
+          Any attempt to leave the exam window will result in termination.
+        </li>
+      </ul>
+      <button id="startExamBtn">Start Exam</button>
     </section>
-    
+
     <div id="exam-content">
-        <h1>Exam</h1>
-        <p>Question 1: What is 2 + 2?</p>
-        <input type="text" id="answer1">
+      <h1>Exam</h1>
+      <p>Question 1: What is 2 + 2?</p>
+      <input type="text" id="answer1" />
     </div>
 
     <div id="exam-terminated">
-        <h2>Exam Terminated</h2>
-        <p>You have violated the exam conditions. Your exam is over.</p>
+      <h2>Exam Terminated</h2>
+      <p>You have violated the exam conditions. Your exam is over.</p>
     </div>
 
-    <!-- <div id="exam-notification">
-        <h2>Warning</h2>
-        <p>Do not exit full-screen mode or switch tabs.</p>
-    </div> -->
+    <div id="exit-dialog">
+      <h2>Warning</h2>
+      <p>Your exam will be terminated. Are you sure you want to leave?</p>
+      <button id="exit-exam">Yes</button>
+      <button id="continue-exam">No</button>
+    </div>
 
     <script src="proctoring.js"></script>
-</body>
+  </body>
 </html>
