@@ -3,7 +3,7 @@
   let mediaRecorder; //MediaRecorder instance for recording video and audio
   let recordedChunks = []; //Array to store recorded video chunks
   let mediaStream; //MediaStream object for webcam and microphone access
-  let idVerified = false; //Flag to indicate if user is verified
+  let idVerification = false; //Flag to indicate if user is verified
 
   // HELPER FUNCTIONS
   /**
@@ -69,12 +69,12 @@
     );
 
     if (!verificationMessage) {
-      idVerified = false;
+      idVerification = false;
       document.getElementById("instructions").style.display = "block";
       document.getElementById("exam-terminated").style.display = "none";
 
       terminateExam();
-    } else idVerified = true;
+    } else idVerification = true;
   }
 
   /**
@@ -185,10 +185,10 @@
   document
     .getElementById("startExamBtn")
     .addEventListener("click", function () {
-      startWebcamAndMic();
       verifyIdentity();
-
-      if (idVerified) {
+      
+      if (idVerification) {
+        startWebcamAndMic();
         document.getElementById("exam-content").style.display = "block";
         enterFullScreen();
       }
