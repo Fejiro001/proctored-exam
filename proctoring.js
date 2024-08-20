@@ -70,10 +70,10 @@
 
     if (!verificationMessage) {
       idVerification = false;
-      document.getElementById("instructions").style.display = "block";
-      document.getElementById("exam-terminated").style.display = "none";
-
       terminateExam();
+
+      // document.getElementById("exam-terminated").style.display = "none";
+      document.getElementById("instructions").style.display = "block";
     } else idVerification = true;
   }
 
@@ -171,10 +171,10 @@
   function handleForbiddenKeys(event) {
     const forbiddenKeys = ["F5", "Meta", "Control", "Alt"];
     if (
-      forbiddenKeys.includes(event.key) ||
+      (forbiddenKeys.includes(event.key) ||
       event.metaKey ||
       event.ctrlKey ||
-      event.altKey
+      event.altKey) && examStarted
     ) {
       event.preventDefault();
       showExitDialog();
@@ -186,7 +186,7 @@
     .getElementById("startExamBtn")
     .addEventListener("click", function () {
       verifyIdentity();
-      
+
       if (idVerification) {
         startWebcamAndMic();
         document.getElementById("exam-content").style.display = "block";
@@ -225,6 +225,8 @@
   document.addEventListener("paste", preventCopyPaste);
 
   document.addEventListener("keydown", handleForbiddenKeys);
+  if (examStarted) {
+  }
 
   window.onbeforeunload = function (e) {
     if (examStarted) {
