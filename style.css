@@ -1,26 +1,50 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
 body {
   font-family: Arial, sans-serif;
+  height: 100vh;
+  padding: 1rem;
+  /* overflow: hidden; */
 }
 #instructions {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+
 }
 #exam-content,
 #exam-terminated,
-#exam-notification {
+#exam-notification,
+#exam-completed {
   display: none;
 }
-#exit-dialog {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
+#exit-dialog,
+#countdown-popup,
+#warning-popup,
+#copy-paste-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    text-align: center;
-  }
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  text-align: center;
+}
 #overlay {
   display: none;
   position: fixed;
@@ -30,4 +54,26 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+#exam-content {
+  flex-direction: column;
+  position: relative;
+  padding: 1rem;
+  gap: 1rem;
+  height: 100%;
+}
+iframe {
+  height: inherit;
+  flex-grow: 1;
+}
+#exam-timer {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  text-align: center;
+  align-self: flex-end;
+  z-index: 0;
+  width: 10rem;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
 }

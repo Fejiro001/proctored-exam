@@ -27,23 +27,48 @@
       <button id="startExamBtn">Start Exam</button>
     </section>
 
-    <div id="exam-content">
-      <h1>Exam</h1>
-      <p>Question 1: What is 2 + 2?</p>
-      <input type="text" id="answer1" />
-    </div>
+    <article id="exam-content">
+      <div id="exam-timer">
+        <p>Time Left: <span id="timer">00:00:00</span></p>
+      </div>
+      <iframe
+        src="https://www.lbs.edu.ng/"
+        width="100%"
+      ></iframe>
+    </article>
 
-    <div id="exam-terminated">
+    <article id="exam-terminated">
       <h2>Exam Terminated</h2>
-      <p>You have violated the exam conditions. Your exam is over.</p>
-    </div>
+      <p>We're sorry, but your exam session has been terminated.</p>
+    </article>
 
-    <div id="exit-dialog">
+    <article id="exam-completed">
+      <h2>Exam Completed</h2>
+      <p>Congratulations! You have successfully completed the exam.</p>
+    </article>
+
+    <article id="exit-dialog">
       <h2>Warning</h2>
       <p>Your exam will be terminated. Are you sure you want to leave?</p>
       <button id="exit-exam">Yes</button>
       <button id="continue-exam">No</button>
-    </div>
+    </article>
+
+    <article id="countdown-popup">
+      <p>You have exited the exam.</p>
+      <p>
+        Your exam will be terminated in <span id="countdown">10</span> seconds.
+      </p>
+    </article>
+
+    <article id="warning-popup">
+      <p>Your exam will be terminated if you leave the exam window again.</p>
+      <button id="close-warning">OK</button>
+    </article>
+
+    <article id="copy-paste-popup">
+      <p>Copy and Paste is not allowed.</p>
+    </article>
 
     <script src="proctoring.js"></script>
   </body>

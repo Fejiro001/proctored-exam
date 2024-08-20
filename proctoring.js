@@ -4,6 +4,11 @@
   let recordedChunks = []; //Array to store recorded video chunks
   let mediaStream; //MediaStream object for webcam and microphone access
   let idVerification = false; //Flag to indicate if user is verified
+  let examContent = document.getElementById("exam-content");
+  let countdownTime = 10; // 10 seconds countdown
+  let countdownInterval;
+  let countdownTimeout;
+  let warningIssued = false;
 
   // HELPER FUNCTIONS
   /**
@@ -77,6 +82,33 @@
     } else idVerification = true;
   }
 
+  function startExamTimer() {
+    const timerElement = document.getElementById("timer");
+
+    function updateTimer() {
+      const minutes = Math.floor(examDuration / 60);
+      const seconds = examDuration % 60;
+      const hours = Math.floor(minutes / 60);
+
+      // Format time as HH:MM:SS
+      const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+        minutes % 60
+      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      timerElement.textContent = formattedTime;
+
+      if (examDuration > 0) {
+        examDuration--;
+      } else {
+        clearInterval(timerInterval);
+        // Call your exam termination function here
+        terminateExam();
+      }
+    }
+
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // Initialize timer immediately
+  }
+
   /**
    * Enters full-screen mode if supported by the browser.
    */
@@ -117,11 +149,72 @@
     }
     examStarted = false;
 
-    document.getElementById("exam-content").style.display = "none";
+    examContent.style.display = "none";
     hideExitDialog();
     stopRecording();
     document.getElementById("exam-terminated").style.display = "block";
   }
+
+  /**
+   * Terminates the exam after 10 seconds has elapsed
+   */
+  function startCountdown() {
+    if (examStarted) {
+      // document.getElementById("overlay").style.display = "block";
+      document.getElementById("countdown-popup").style.display = "block";
+
+      const countdownElement = document.getElementById("countdown");
+      countdownElement.textContent = countdownTime;
+
+      countdownInterval = setInterval(() => {
+        countdownTime--;
+        countdownElement.textContent = countdownTime;
+
+        if (countdownTime <= 0) {
+          clearInterval(countdownInterval);
+          terminateExam();
+          document.getElementById("countdown-popup").style.display = "none";
+          terminateExam();
+        }
+      }, 1000);
+
+      countdownTimeout = setTimeout(() => {
+        clearInterval(countdownInterval);
+        document.getElementById("countdown-popup").style.display = "none";
+        terminateExam();
+      }, 10000);
+    }
+  }
+
+  /**
+   * Resets the counter
+   */
+  function resetCountdown() {
+    clearInterval(countdownInterval);
+    clearTimeout(countdownTimeout);
+    countdownTime = 10; // Reset countdown to 10 seconds
+    document.getElementById("countdown-popup").style.display = "none";
+  }
+
+  /**
+   * Issues a warning the first time you leave to another application
+   */
+  const warningPopup = document.getElementById("warning-popup");
+  const closeWarning = document.getElementById("close-warning");
+
+  function issueWarning() {
+    if (warningIssued) return;
+
+    warningIssued = true;
+
+    warningPopup.style.display = "block";
+    // setTimeout(() => {
+    //   warningPopup.style.display = "none";
+    // }, 2000);
+  }
+  closeWarning.addEventListener("click", function () {
+    warningPopup.style.display = "none";
+  });
 
   /**
    * Displays the custom exit dialog asking if the user wants to exit the exam.
@@ -150,11 +243,26 @@
   }
 
   /**
+   * Shows the user a message when trying to copy/paste
+   */
+  function copyPasteMessage() {
+    const copyPastePopup = document.getElementById("copy-paste-popup");
+
+    if (examStarted) {
+      copyPastePopup.style.display = "block";
+      countdownTimeout = setTimeout(() => {
+        copyPastePopup.style.display = "none";
+      }, 1500);
+    }
+  }
+
+  /**
    * Prevents the default behavior for right-click, copy, cut, and paste actions
    * to avoid copying or interacting with the exam content.
    */
   function preventContextMenu(e) {
     e.preventDefault();
+    copyPasteMessage();
   }
 
   /**
@@ -162,6 +270,7 @@
    */
   function preventCopyPaste(e) {
     e.preventDefault();
+    copyPasteMessage();
   }
 
   /**
@@ -169,15 +278,22 @@
    * Displays the exit dialog if forbidden keys are pressed.
    */
   function handleForbiddenKeys(event) {
-    const forbiddenKeys = ["F5", "Meta", "Control", "Alt"];
-    if (
-      (forbiddenKeys.includes(event.key) ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.altKey) && examStarted
-    ) {
+    const forbiddenKeys = ["F5"];
+    if (forbiddenKeys.includes(event.key) && examStarted) {
       event.preventDefault();
       showExitDialog();
+    } else if (
+      event.key === "Meta" ||
+      ((event.altKey ||
+        event.code === "AltRight" ||
+        event.code === "AltLeft") &&
+        event.key === "Tab")
+    ) {
+      if (warningIssued) {
+        startCountdown();
+      } else {
+        issueWarning();
+      }
     }
   }
 
@@ -189,8 +305,9 @@
 
       if (idVerification) {
         startWebcamAndMic();
-        document.getElementById("exam-content").style.display = "block";
+        examContent.style.display = "flex";
         enterFullScreen();
+        startExamTimer();
       }
       document.getElementById("instructions").style.display = "none";
 
@@ -201,8 +318,12 @@
    * Checks if there is a tab switch
    */
   document.addEventListener("visibilitychange", function () {
-    if (document.hidden && examStarted) {
-      showExitDialog();
+    if (!examStarted) return;
+
+    if (!warningIssued) {
+      issueWarning();
+    } else if (warningIssued && document.hidden) {
+      startCountdown();
     }
   });
 
@@ -225,8 +346,6 @@
   document.addEventListener("paste", preventCopyPaste);
 
   document.addEventListener("keydown", handleForbiddenKeys);
-  if (examStarted) {
-  }
 
   window.onbeforeunload = function (e) {
     if (examStarted) {
@@ -237,7 +356,7 @@
 
   window.onblur = function () {
     if (document.fullscreenElement && examStarted) {
-      showExitDialog();
+      issueWarning();
     }
   };
 })();
